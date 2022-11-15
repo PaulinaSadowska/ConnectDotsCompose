@@ -21,7 +21,10 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.background
                 ) {
                     Box {
-                        GameBoard(Modifier.align(Alignment.Center))
+                        GameBoard(
+                                modifier = Modifier.align(Alignment.Center),
+                                drawController = rememberDrawController()
+                        )
                     }
                 }
             }
