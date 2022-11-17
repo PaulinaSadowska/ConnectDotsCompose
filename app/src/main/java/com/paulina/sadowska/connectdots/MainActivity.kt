@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     Box {
                         GameBoard(
                                 modifier = Modifier.align(Alignment.Center),
-                                drawController = rememberDrawController()
+                                boardController = rememberDrawController()
                         )
                     }
                 }

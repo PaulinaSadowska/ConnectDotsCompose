@@ -1,5 +1,8 @@
 package com.paulina.sadowska.connectdots
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -7,54 +10,69 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 
 @Composable
 fun GameBoard(
         modifier: Modifier = Modifier,
-        drawController: DrawController,
+        boardController: BoardController,
 ) {
-    val radius = 8.dp
     val boardSize = 300.dp
-    val numOfElements = 8
-    val multiplier = 1.0f / (numOfElements + 1)
+    val radius = 12.dp
     val dotColor = MaterialTheme.colorScheme.primary
+    val circlesController = with(LocalDensity.current) {
+         CirclesController(
+                numOfElements = 4,
+                boardSize = boardSize.toPx(),
+                radiusPx = radius.toPx().roundToInt()
+        )
+    }
+
     Canvas(
             modifier = modifier
                     .size(size = boardSize)
                     .pointerInput(Unit) {
                         detectDragGestures(
-                                onDragStart = { offset ->
-                                    drawController.insertNewPath(offset)
+                                onDragStart = { newPoint ->
+                                    val circle = circlesController.findCircleInPoint(newPoint)
+                                    circle?.let{
+                                        boardController.insertNewPath(circle)
+                                    }
+                                },
+                                onDragCancel = {
+                                    boardController.removeLastPath()
+                                },
+                                onDragEnd = {
+                                    boardController.removeLastPath()
                                 }
                         ) { change, _ ->
                             val newPoint = change.position
-                            drawController.updateLatestPath(newPoint)
+                            val circle = circlesController.findCircleInPoint(newPoint)
+                            circle?.let{
+                                boardController.updateLatestPath(circle)
+                                boardController.insertNewPath(circle)
+                            } ?: run {
+                                boardController.updateLatestPath(newPoint)
+                            }
                         }
                         detectTapGestures {
-                            drawController.onTap()
+                            boardController.onTap()
                         }
                     }
     ) {
-        val boardWidth = this.size.width
-        val boardHeight = this.size.height
-
-        for (i in 1..numOfElements) {
-            val offsetX = boardWidth * i * multiplier
-            for (j in 1..numOfElements) {
-                val offsetY = boardHeight * j * multiplier
-                drawCircle(
-                        color = dotColor,
-                        radius = radius.toPx(),
-                        center = Offset(offsetX, offsetY)
-                )
-            }
+        circlesController.positions.forEach {
+            drawCircle(
+                    color = dotColor,
+                    radius = radius.toPx(),
+                    center = it
+            )
         }
 
-        drawController._paths.forEach {
+        boardController._paths.forEach {
             drawLine(
                     color = dotColor,
                     start = it.start,
@@ -68,10 +86,10 @@ fun GameBoard(
 @Preview(showBackground = true)
 @Composable
 fun GameBoardPreview() {
-    GameBoard(drawController = DrawController())
+    GameBoard(boardController = BoardController())
 }
 
 @Composable
-fun rememberDrawController(): DrawController {
-    return remember { DrawController() }
+fun rememberDrawController(): BoardController {
+    return remember { BoardController() }
 }
