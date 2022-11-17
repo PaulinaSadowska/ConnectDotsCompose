@@ -3,28 +3,23 @@ package com.paulina.sadowska.connectdots
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Offset
 
-class BoardController {
+class PathsController {
 
-    internal val _paths = SnapshotStateList<Path>()
-
+    internal val paths = SnapshotStateList<Path>()
 
     fun insertNewPath(offset: Offset) {
-        _paths.add(Path(offset, offset))
+        paths.add(Path(offset, offset))
     }
 
     fun updateLatestPath(newPoint: Offset) {
-        if (_paths.isNotEmpty()) {
-            val lastPath = _paths.removeAt(_paths.lastIndex)
-            _paths.add(lastPath.copy(end = newPoint))
+        if (paths.isNotEmpty()) {
+            val lastPath = paths.removeAt(paths.lastIndex)
+            paths.add(lastPath.copy(end = newPoint))
         }
     }
 
-    fun onTap() {
-        //TODO("Not yet implemented")
-    }
-
     fun removeLastPath() {
-        _paths.removeAt(_paths.lastIndex)
+        paths.removeAt(paths.lastIndex)
     }
 
 }
