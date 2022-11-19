@@ -10,8 +10,6 @@ class GameController(
     val paths = pathsController.paths
     val circlePositions = circlesController.positions
 
-    internal val _ripple = SnapshotStateList<Offset>()
-
     fun onDragStart(point: Offset) {
         circlesController.findCircleInPoint(point)?.let { circle ->
             pathsController.insertNewPath(circle)
@@ -33,7 +31,7 @@ class GameController(
 
     fun onTap(point: Offset) {
         circlesController.findCircleInPoint(point)?.let { circle ->
-            _ripple.add(circle)
+           // todo
         }
     }
 

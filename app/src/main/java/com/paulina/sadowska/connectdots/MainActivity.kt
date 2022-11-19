@@ -9,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -30,10 +29,8 @@ class MainActivity : ComponentActivity() {
                         val boardSize = 300.dp
                         val radius = 12.dp
                         val gameController = rememberGameController(boardSize, radius)
-                        AnimatedCircle(
-                                gameController = gameController,
-                                boardSize = boardSize
-                        )
+                        RippleOnClick()
+                        //AnimatedBackground()
                         /*GameBoard(
                                 modifier = Modifier.align(Alignment.Center),
                                 gameController = gameController,
