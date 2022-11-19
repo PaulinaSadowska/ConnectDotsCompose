@@ -1,6 +1,5 @@
 package com.paulina.sadowska.connectdots
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Offset
 
 class GameController(
@@ -9,10 +8,12 @@ class GameController(
 ) {
     val paths = pathsController.paths
     val circlePositions = circlesController.positions
+    var onDotConnected: ((Offset) -> Unit)? = null
 
     fun onDragStart(point: Offset) {
         circlesController.findCircleInPoint(point)?.let { circle ->
             pathsController.insertNewPath(circle)
+            onDotConnected?.let { it(circle) }
         }
     }
 
@@ -22,17 +23,15 @@ class GameController(
 
     fun onDragChange(point: Offset) {
         circlesController.findCircleInPoint(point)?.let { circle ->
-            pathsController.updateLatestPath(circle)
-            pathsController.insertNewPath(circle)
+            if (pathsController.createNewPathSection(circle)) {
+                onDotConnected?.let { it(circle) }
+            }
         } ?: run {
             pathsController.updateLatestPath(point)
         }
     }
 
-    fun onTap(point: Offset) {
-        circlesController.findCircleInPoint(point)?.let { circle ->
-           // todo
-        }
+    fun onDotConnected(callback: (Offset) -> Unit) {
+        onDotConnected = callback
     }
-
 }

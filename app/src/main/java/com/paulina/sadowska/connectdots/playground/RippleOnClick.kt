@@ -1,13 +1,11 @@
-package com.paulina.sadowska.connectdots
+package com.paulina.sadowska.connectdots.playground
 
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -32,10 +30,10 @@ fun RippleOnClick() {
 
     LaunchedEffect(size, alpha) {
         launch {
-            size.animateTo(targetValue = 100f, animationSpec = tween(2000))
+            size.animateTo(targetValue = 100f)
         }
         launch {
-            alpha.animateTo(targetValue = 0f, animationSpec = tween(2000))
+            alpha.animateTo(targetValue = 0f)
         }
     }
     Canvas(modifier = Modifier

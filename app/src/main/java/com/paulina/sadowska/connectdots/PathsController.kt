@@ -19,7 +19,23 @@ class PathsController {
     }
 
     fun removeLastPath() {
-        paths.removeAt(paths.lastIndex)
+        if (paths.isNotEmpty()) {
+            paths.removeAt(paths.lastIndex)
+        }
+    }
+
+    fun createNewPathSection(circle: Offset): Boolean {
+        return if (paths.isNotEmpty()) {
+            if (circle != paths[paths.lastIndex].end) {
+                updateLatestPath(circle)
+                insertNewPath(circle)
+                true
+            } else {
+                false
+            }
+        } else {
+            false
+        }
     }
 
 }

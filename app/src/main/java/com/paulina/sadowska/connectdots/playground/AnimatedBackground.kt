@@ -1,4 +1,4 @@
-package com.paulina.sadowska.connectdots
+package com.paulina.sadowska.connectdots.playground
 
 
 import androidx.compose.animation.core.tween

@@ -9,10 +9,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.paulina.sadowska.connectdots.playground.RippleOnClick
 import com.paulina.sadowska.connectdots.ui.theme.ConnectDotsTheme
 import kotlin.math.roundToInt
 
@@ -29,14 +31,14 @@ class MainActivity : ComponentActivity() {
                         val boardSize = 300.dp
                         val radius = 12.dp
                         val gameController = rememberGameController(boardSize, radius)
-                        RippleOnClick()
+                        //RippleOnClick()
                         //AnimatedBackground()
-                        /*GameBoard(
+                        GameBoard(
                                 modifier = Modifier.align(Alignment.Center),
                                 gameController = gameController,
                                 boardSize = boardSize,
                                 radius = radius,
-                        )*/
+                        )
                     }
                 }
             }
