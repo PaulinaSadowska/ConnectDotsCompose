@@ -8,12 +8,12 @@ class GameController(
 ) {
     val paths = pathsController.paths
     val circlePositions = circlesController.positions
-    var onDotConnected: ((Offset) -> Unit)? = null
+    var onDotConnected: ((Int) -> Unit)? = null
 
     fun onDragStart(point: Offset) {
-        circlesController.findCircleInPoint(point)?.let { circle ->
+        circlesController.findCircleInPoint(point)?.let { (circle, index) ->
             pathsController.insertNewPath(circle)
-            onDotConnected?.let { it(circle) }
+            onDotConnected?.let { it(index) }
         }
     }
 
@@ -22,16 +22,16 @@ class GameController(
     }
 
     fun onDragChange(point: Offset) {
-        circlesController.findCircleInPoint(point)?.let { circle ->
+        circlesController.findCircleInPoint(point)?.let { (circle, index) ->
             if (pathsController.createNewPathSection(circle)) {
-                onDotConnected?.let { it(circle) }
+                onDotConnected?.let { it(index) }
             }
         } ?: run {
             pathsController.updateLatestPath(point)
         }
     }
 
-    fun onDotConnected(callback: (Offset) -> Unit) {
+    fun onDotConnected(callback: (Int) -> Unit) {
         onDotConnected = callback
     }
 }

@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun GameBoard(
+fun RippleDotsBoard(
         modifier: Modifier = Modifier,
         gameController: GameController,
         boardSize: Dp,
@@ -25,42 +25,46 @@ fun GameBoard(
 ) {
 
     val dotColor = MaterialTheme.colorScheme.primary
+    val radiusPx = with(LocalDensity.current) {
+        radius.toPx()
+    }
+
+    var size by remember {
+        mutableStateOf(Animatable(radiusPx))
+    }
+
+    var alpha by remember {
+        mutableStateOf(Animatable(0f))
+    }
+
+    LaunchedEffect(size, alpha) {
+        launch {
+            size.animateTo(targetValue = 100f, animationSpec = tween(1000))
+        }
+        launch {
+            alpha.animateTo(targetValue = 0f, animationSpec = tween(1000))
+        }
+    }
+
+    gameController.onDotConnected {
+        size = Animatable(radiusPx)
+        alpha = Animatable(1f)
+    }
 
     Canvas(
             modifier = modifier
                     .size(size = boardSize)
-                    .pointerInput(Unit) {
-                        detectDragGestures(
-                                onDragStart = {
-                                    gameController.onDragStart(it)
-                                },
-                                onDragCancel = {
-                                    gameController.onDragEnd()
-                                },
-                                onDragEnd = {
-                                    gameController.onDragEnd()
-                                }
-                        ) { change, _ ->
-                            gameController.onDragChange(change.position)
-                        }
-                    }
+
     ) {
-        gameController.circlePositions.forEach {
+        gameController.circlePositions.forEachIndexed { index, offset ->
             drawCircle(
                     color = dotColor,
-                    radius = radius.toPx(),
-                    center = it
+                    alpha = alpha.value,
+                    radius = size.value,
+                    center = offset
             )
         }
 
-        gameController.paths.forEach {
-            drawLine(
-                    color = dotColor,
-                    start = it.start,
-                    end = it.end,
-                    strokeWidth = radius.toPx() / 2
-            )
-        }
     }
 }
 

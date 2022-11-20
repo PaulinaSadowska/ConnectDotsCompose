@@ -33,6 +33,12 @@ class MainActivity : ComponentActivity() {
                         val gameController = rememberGameController(boardSize, radius)
                         //RippleOnClick()
                         //AnimatedBackground()
+                        RippleDotsBoard(
+                                modifier = Modifier.align(Alignment.Center),
+                                gameController = gameController,
+                                boardSize = boardSize,
+                                radius = radius,
+                        )
                         GameBoard(
                                 modifier = Modifier.align(Alignment.Center),
                                 gameController = gameController,

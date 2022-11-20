@@ -59,10 +59,11 @@ class CirclesController(
         }
     }
 
-    fun findCircleInPoint(point: Offset): Offset? {
-        return positions.find { circlePosition ->
+    fun findCircleInPoint(point: Offset): Pair<Offset, Int>? {
+        val circle = positions.find { circlePosition ->
             point.x > (circlePosition.x - radiusPx) && point.x < (circlePosition.x + radiusPx) &&
                     point.y > (circlePosition.y - radiusPx) && point.y < (circlePosition.y + radiusPx)
         }
+        return circle?.let { Pair(circle, positions.indexOf(circle)) }
     }
 }
