@@ -1,20 +1,15 @@
 package com.paulina.sadowska.connectdots
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @Composable
 fun RippleDotsBoard(
@@ -29,42 +24,36 @@ fun RippleDotsBoard(
         radius.toPx()
     }
 
-    var size by remember {
-        mutableStateOf(Animatable(radiusPx))
+    val size = remember {
+        mutableStateListOf(*(List(20) { Animatable(radiusPx) }.toTypedArray()))
     }
 
-    var alpha by remember {
-        mutableStateOf(Animatable(0f))
+    val alpha = remember {
+        mutableStateListOf(*(List(20) { Animatable(0f) }.toTypedArray()))
     }
 
-    LaunchedEffect(size, alpha) {
-        launch {
-            size.animateTo(targetValue = 100f, animationSpec = tween(1000))
+    gameController.onDotConnected { index, scope ->
+        with(scope) {
+            launch {
+                size[index] = Animatable(radiusPx)
+                size[index].animateTo(targetValue = 100f, animationSpec = tween(1000))
+            }
+            launch {
+                alpha[index] = Animatable(1f)
+                alpha[index].animateTo(targetValue = 0f, animationSpec = tween(1000))
+            }
         }
-        launch {
-            alpha.animateTo(targetValue = 0f, animationSpec = tween(1000))
-        }
     }
 
-    gameController.onDotConnected {
-        size = Animatable(radiusPx)
-        alpha = Animatable(1f)
-    }
-
-    Canvas(
-            modifier = modifier
-                    .size(size = boardSize)
-
-    ) {
+    Canvas(modifier = modifier.size(size = boardSize)) {
         gameController.circlePositions.forEachIndexed { index, offset ->
             drawCircle(
                     color = dotColor,
-                    alpha = alpha.value,
-                    radius = size.value,
+                    alpha = alpha[index].value,
+                    radius = size[index].value,
                     center = offset
             )
         }
-
     }
 }
 

@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.paulina.sadowska.connectdots.playground.RippleOnClick
 import com.paulina.sadowska.connectdots.ui.theme.ConnectDotsTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
@@ -30,8 +32,10 @@ class MainActivity : ComponentActivity() {
                     Box {
                         val boardSize = 300.dp
                         val radius = 12.dp
-                        val gameController = rememberGameController(boardSize, radius)
-                        //RippleOnClick()
+
+                        val coroutineScope = rememberCoroutineScope()
+                        val gameController = rememberGameController(boardSize, radius, coroutineScope)
+
                         //AnimatedBackground()
                         RippleDotsBoard(
                                 modifier = Modifier.align(Alignment.Center),
@@ -45,6 +49,7 @@ class MainActivity : ComponentActivity() {
                                 boardSize = boardSize,
                                 radius = radius,
                         )
+                        //RippleOnClick()
                     }
                 }
             }
@@ -55,7 +60,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun rememberGameController(
         boardSize: Dp,
-        radius: Dp
+        radius: Dp,
+        coroutineScope: CoroutineScope
 ): GameController {
     val circlesController = with(LocalDensity.current) {
         CirclesController(
@@ -67,7 +73,8 @@ fun rememberGameController(
     return remember {
         GameController(
                 pathsController = PathsController(),
-                circlesController = circlesController
+                circlesController = circlesController,
+                coroutineScope
         )
     }
 }
