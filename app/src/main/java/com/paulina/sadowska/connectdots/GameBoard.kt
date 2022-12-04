@@ -23,9 +23,6 @@ fun GameBoard(
         boardSize: Dp,
         radius: Dp,
 ) {
-
-    val dotColor = MaterialTheme.colorScheme.primary
-
     Canvas(
             modifier = modifier
                     .size(size = boardSize)
@@ -45,17 +42,17 @@ fun GameBoard(
                         }
                     }
     ) {
-        gameController.circlePositions.forEach {
+        gameController.circles.forEach {
             drawCircle(
-                    color = dotColor,
+                    color = it.color,
                     radius = radius.toPx(),
-                    center = it
+                    center = it.position
             )
         }
 
         gameController.paths.forEach {
             drawLine(
-                    color = dotColor,
+                    color = it.color,
                     start = it.start,
                     end = it.end,
                     strokeWidth = radius.toPx() / 2

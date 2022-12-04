@@ -2,13 +2,14 @@ package com.paulina.sadowska.connectdots
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 
 class PathsController {
 
     internal val paths = SnapshotStateList<Path>()
 
-    fun insertNewPath(offset: Offset) {
-        paths.add(Path(offset, offset))
+    fun insertNewPath(circle: Circle) {
+        paths.add(Path(circle.position, circle.position, circle.color))
     }
 
     fun updateLatestPath(newPoint: Offset) {
@@ -24,10 +25,11 @@ class PathsController {
         }
     }
 
-    fun createNewPathSection(circle: Offset): Boolean {
+    fun createNewPathSection(circle: Circle): Boolean {
         return if (paths.isNotEmpty()) {
-            if (circle != paths[paths.lastIndex].end) {
-                updateLatestPath(circle)
+            val lastPath = paths[paths.lastIndex]
+            if (circle.position != lastPath.end && circle.color == lastPath.color) {
+                updateLatestPath(circle.position)
                 insertNewPath(circle)
                 true
             } else {
@@ -43,27 +45,35 @@ class PathsController {
 data class Path(
         val start: Offset,
         val end: Offset,
+        val color: Color
 )
 
 class CirclesController(
         numOfElements: Int,
         boardSize: Float,
-        private val radiusPx: Int
+        private val radiusPx: Int,
+        private val colors: List<Color>
 ) {
     private val multiplier = 1.0f / (numOfElements + 1)
-    val positions = (1..numOfElements).flatMap { i ->
+    val circles = (1..numOfElements).flatMap { i ->
         val offsetX = boardSize * i * multiplier
         (1..numOfElements).map { j ->
             val offsetY = boardSize * j * multiplier
-            Offset(offsetX, offsetY)
+            Circle(Offset(offsetX, offsetY), colors.random())
         }
     }
 
-    fun findCircleInPoint(point: Offset): Pair<Offset, Int>? {
-        val circle = positions.find { circlePosition ->
+    fun findCircleInPoint(point: Offset): Pair<Circle, Int>? {
+        val circle = circles.find { circle ->
+            val circlePosition = circle.position
             point.x > (circlePosition.x - radiusPx) && point.x < (circlePosition.x + radiusPx) &&
                     point.y > (circlePosition.y - radiusPx) && point.y < (circlePosition.y + radiusPx)
         }
-        return circle?.let { Pair(circle, positions.indexOf(circle)) }
+        return circle?.let { Pair(circle, circles.indexOf(circle)) }
     }
 }
+
+data class Circle(
+        val position: Offset,
+        val color: Color
+)

@@ -18,8 +18,6 @@ fun RippleDotsBoard(
         boardSize: Dp,
         radius: Dp,
 ) {
-
-    val dotColor = MaterialTheme.colorScheme.primary
     val radiusPx = with(LocalDensity.current) {
         radius.toPx()
     }
@@ -46,12 +44,12 @@ fun RippleDotsBoard(
     }
 
     Canvas(modifier = modifier.size(size = boardSize)) {
-        gameController.circlePositions.forEachIndexed { index, offset ->
+        gameController.circles.forEachIndexed { index, circle ->
             drawCircle(
-                    color = dotColor,
+                    color = circle.color,
                     alpha = alpha[index].value,
                     radius = size[index].value,
-                    center = offset
+                    center = circle.position
             )
         }
     }

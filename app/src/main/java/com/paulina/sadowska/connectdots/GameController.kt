@@ -9,7 +9,7 @@ class GameController(
         private val coroutineScope: CoroutineScope
 ) {
     val paths = pathsController.paths
-    val circlePositions = circlesController.positions
+    val circles = circlesController.circles
     private var onDotConnected: ((Int, CoroutineScope) -> Unit)? = null
 
     fun onDragStart(point: Offset) {

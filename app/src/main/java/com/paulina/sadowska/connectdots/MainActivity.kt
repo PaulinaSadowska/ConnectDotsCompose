@@ -15,8 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.paulina.sadowska.connectdots.playground.RippleOnClick
-import com.paulina.sadowska.connectdots.ui.theme.ConnectDotsTheme
+import com.paulina.sadowska.connectdots.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import kotlin.math.roundToInt
 
@@ -67,7 +66,13 @@ fun rememberGameController(
         CirclesController(
                 numOfElements = 4,
                 boardSize = boardSize.toPx(),
-                radiusPx = radius.toPx().roundToInt()
+                radiusPx = radius.toPx().roundToInt(),
+                colors = listOf(
+                        Blue,
+                        Red,
+                        Green,
+                        Yellow
+                )
         )
     }
     return remember {
