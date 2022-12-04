@@ -28,23 +28,16 @@ class PathsController {
     }
 
     fun createNewPathSection(circle: Circle): Boolean {
-        return if (paths.isNotEmpty()) {
-            val lastPath = paths[paths.lastIndex]
-            if (
-                    circle.position != lastPath.end &&
-                    circle.color == lastPath.color
-            ) {
+        return paths.getOrNull(paths.lastIndex)?.let { lastPath ->
+            if (circle.position != lastPath.end && circle.color == lastPath.color) {
                 updateLatestPath(circle.position)
                 insertNewPath(circle)
                 true
             } else {
                 false
             }
-        } else {
-            false
-        }
+        } ?: false
     }
-
 }
 
 data class Path(
