@@ -9,26 +9,31 @@ class PathsController {
     internal val paths = SnapshotStateList<Path>()
 
     fun insertNewPath(circle: Circle) {
-        paths.add(Path(circle.position, circle.position, circle.color))
+        paths.add(Path(circle.position, circle.position, circle.color, false))
     }
 
     fun updateLatestPath(newPoint: Offset) {
-        if (paths.isNotEmpty()) {
+        if (paths.isNotEmpty() && !paths[paths.lastIndex].finished) {
             val lastPath = paths.removeAt(paths.lastIndex)
             paths.add(lastPath.copy(end = newPoint))
         }
     }
 
     fun removeLastPath() {
-        if (paths.isNotEmpty()) {
+        if (paths.isNotEmpty() && !paths[paths.lastIndex].finished) {
             paths.removeAt(paths.lastIndex)
+            val lastPath = paths.removeAt(paths.lastIndex)
+            paths.add(lastPath.copy(finished = true))
         }
     }
 
     fun createNewPathSection(circle: Circle): Boolean {
         return if (paths.isNotEmpty()) {
             val lastPath = paths[paths.lastIndex]
-            if (circle.position != lastPath.end && circle.color == lastPath.color) {
+            if (
+                    circle.position != lastPath.end &&
+                    circle.color == lastPath.color
+            ) {
                 updateLatestPath(circle.position)
                 insertNewPath(circle)
                 true
@@ -45,7 +50,8 @@ class PathsController {
 data class Path(
         val start: Offset,
         val end: Offset,
-        val color: Color
+        val color: Color,
+        val finished: Boolean
 )
 
 class CirclesController(
